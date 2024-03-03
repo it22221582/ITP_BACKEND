@@ -1,5 +1,5 @@
 import express from "express";
-
+import { GeneratehashPassword } from "../Utilities/hashPassword.js";
 const router = express.Router();
 
 import admin from "../models/admin.js";
@@ -14,13 +14,16 @@ router.route("/addAdmin").post(async (req, res) => {
   const mobile = req.body.mobile;
   const password = req.body.password;
   const role = "ADMIN";
+
+  const hashedPassword = await GeneratehashPassword(password);
+
   try {
     const newAdmin = new admin({
       firstName,
       lastName,
       email,
       mobile,
-      password,
+      password: hashedPassword,
       role,
     });
 

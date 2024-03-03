@@ -1,5 +1,5 @@
 import express from "express";
-
+import { GeneratehashPassword } from "../Utilities/hashPassword.js";
 const router = express.Router();
 
 import customer from "../models/customer.js";
@@ -19,6 +19,8 @@ router.route("/addCustomer").post(async (req, res) => {
   const password = req.body.password;
   const role = "CUSTOMER";
 
+  const hashedPassword = await GeneratehashPassword(password);
+
   try {
     const newCustomer = new customer({
       firstName,
@@ -29,11 +31,12 @@ router.route("/addCustomer").post(async (req, res) => {
       province,
       district,
       postalCode,
-      password,
+      password: hashedPassword,
       role,
     });
 
     const savedCustomer = await newCustomer.save();
+
     console.log("Customer Added:", savedCustomer);
     res.status(200).json({
       success: true,

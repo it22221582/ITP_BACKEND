@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 const saltRounds = 10; // Adjust the number of salt rounds as needed
 
-async function hashPassword(password) {
+export const GeneratehashPassword = async (password) => {
   try {
     const salt = await bcrypt.genSalt(saltRounds);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -9,7 +9,7 @@ async function hashPassword(password) {
   } catch (error) {
     throw error;
   }
-}
+};
 
 async function comparePasswords(plainPassword, hashedPassword) {
   try {
@@ -19,5 +19,3 @@ async function comparePasswords(plainPassword, hashedPassword) {
     throw error;
   }
 }
-
-export default { hashPassword, comparePasswords };

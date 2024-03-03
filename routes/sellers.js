@@ -3,33 +3,38 @@ import express from "express";
 const router = express.Router();
 
 import seller from "../models/seller.js";
+import { GeneratehashPassword } from "../Utilities/hashPassword.js";
 //to insert/add a seller
 // http://localhost:5001/seller/addSeller  -->Post
 
 router.route("/addSeller").post(async (req, res) => {
-  const firstName = req.body.firstName;
-  const lastName = req.body.lastName;
-  const email = req.body.email;
-  const mobile = req.body.mobile;
-  const address = req.body.address;
-  const postalCode = req.body.postalCode;
-  const password = req.body.password;
-  const shopID = req.body.shopID;
-  const role = "SELLER";
-
-  const newSeller = new seller({
-    firstName,
-    lastName,
-    email,
-    mobile,
-    address,
-    postalCode,
-    password,
-    shopID,
-    role,
-  });
   try {
+    const firstName = req.body.firstName;
+    const lastName = req.body.lastName;
+    const email = req.body.email;
+    const mobile = req.body.mobile;
+    const address = req.body.address;
+    const postalCode = req.body.postalCode;
+    const password = req.body.password;
+    const shopID = req.body.shopID;
+    const role = "SELLER";
+
+    const hashedPassword = await GeneratehashPassword(password);
+
+    const newSeller = new seller({
+      firstName,
+      lastName,
+      email,
+      mobile,
+      address,
+      postalCode,
+      password: hashedPassword,
+      shopID,
+      role,
+    });
+
     const savedSeller = await newSeller.save();
+
     console.log("Seller Added:", savedSeller);
     res.status(200).json({
       success: true,
@@ -41,19 +46,21 @@ router.route("/addSeller").post(async (req, res) => {
     res.status(500).json({
       success: false,
       data: {},
-      message: err,
+      message: err.message || "Internal Server Error",
     });
   }
-  // newSeller
-  //   .save()
-  //   .then(() => {
-  //     res.json("Seller Added");
-  //     console.log("seller Added");
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
 });
+
+// newSeller
+//   .save()
+//   .then(() => {
+//     res.json("Seller Added");
+//     console.log("seller Added");
+//   })
+//   .catch((err) => {
+//     console.log(err);
+//   });
+
 //To display sellers //get details of all the sellers
 // http://localhost:5001/seller
 
