@@ -1,7 +1,7 @@
 import express from "express";
-import hashPassword from "../Utilities/hashPassword.js";
-import generateToken from "../Utilities/jwtToken.js";
 
+import generateToken from "../Utilities/jwtToken.js";
+import { GeneratehashPassword } from "../Utilities/hashPassword.js";
 import customer from "../models/customer.js";
 import seller from "../models/seller.js";
 import admin from "../models/admin.js";
@@ -13,15 +13,16 @@ router.route("/Customerlogin").post(async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const hashedPassword = await hashPassword(password);
+    const hashedPassword = await GeneratehashPassword(password);
     console.log(hashedPassword);
-    console.log("hashedpassword");
+
     const selectedCustomer = await customer.findOne({
-      email: email,
-      password: hashedPassword,
+      email,
+      password,
     });
+
     if (selectedCustomer) {
-      const token = generateToken(selectedCustomer);
+      const token = GeneratehashPassword(selectedCustomer);
 
       res.status(200).json({
         success: true,
@@ -45,6 +46,33 @@ router.route("/Customerlogin").post(async (req, res) => {
       token: "",
     });
   }
+  // try {
+
+  //   if (selectedCustomer) {
+  //     const token = GeneratehashPassword(selectedCustomer);
+
+  //     res.status(200).json({
+  //       success: true,
+  //       data: selectedCustomer,
+  //       message: "Login success",
+  //       token: token,
+  //     });
+  //   } else {
+  //     res.status(200).json({
+  //       success: false,
+  //       data: {},
+  //       message: "Login failed!",
+  //       token: "",
+  //     });
+  //   }
+  // } catch (error) {
+  //   res.status(500).json({
+  //     success: false,
+  //     data: {},
+  //     message: error,
+  //     token: "",
+  //   });
+  // }
 });
 
 //http://localhost:5001/login/Sellerlogin
