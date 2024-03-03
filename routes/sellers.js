@@ -112,13 +112,11 @@ router.route("/update/:id").put(async (req, res) => {
     const update = await seller
       .findByIdAndUpdate(userid, updateSeller)
       .then(() => {
-        res
-          .status(200)
-          .json({
-            success: true,
-            data: updateSeller,
-            message: "seller updated",
-          });
+        res.status(200).json({
+          success: true,
+          data: updateSeller,
+          message: "seller updated",
+        });
       });
   } catch (err) {
     console.error("Error updating the seller:", err);
