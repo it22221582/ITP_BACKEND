@@ -1,11 +1,12 @@
 import jwt from "jsonwebtoken";
 const secretKey = "kasundi"; // Replace with your secret key, and consider storing it securely
 
-function generateToken(payload) {
-  return jwt.sign(payload, secretKey, { expiresIn: "1h" }); // Adjust the expiration time as needed
+export function generateToken(payload) {
+  console.log("in genarate token function");
+  return jwt.sign({ payload }, secretKey, { expiresIn: "1h" }); // Adjust the expiration time as needed
 }
 
-function verifyToken(token) {
+export function verifyToken(token) {
   try {
     const decoded = jwt.verify(token, secretKey);
     return decoded;
@@ -14,7 +15,7 @@ function verifyToken(token) {
   }
 }
 
-function authenticateToken(req, res, next) {
+export function authenticateToken(req, res, next) {
   const token = req.header("Authorization")?.replace("Bearer ", "");
 
   if (!token) {
@@ -30,5 +31,3 @@ function authenticateToken(req, res, next) {
     res.status(401).json({ error: "Unauthorized - Invalid token" });
   }
 }
-
-export default { generateToken, verifyToken, authenticateToken };

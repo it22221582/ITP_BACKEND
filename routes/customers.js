@@ -3,6 +3,7 @@ import { GeneratehashPassword } from "../Utilities/hashPassword.js";
 const router = express.Router();
 
 import customer from "../models/customer.js";
+import { authenticateToken } from "../Utilities/jwtToken.js";
 
 //to insert/add a customer
 // http://localhost:5001/customer/addCustomer  -->Post
@@ -151,23 +152,33 @@ router.route("/deleteCustomer/:id").delete(async (req, res) => {
   }
 });
 
-// http://localhost:5001/customer/get/--id--
-router.route("/get/:id").get(async (req, res) => {
+// http://localhost:5001/customer/get/user
+router.route("/get/user").get(authenticateToken, async (req, res) => {
   let userid = req.params.id;
+  let id = "111";
+  console.log("");
+  console.log(req.user.payload._id);
+  console.log("");
   try {
-    const user = await customer.findById(userid).then((customer) => {
-      res.status(200).json({
-        success: true,
-        message: "Customer fetched",
-        data: user,
+    const user = await customer.findById(req.user.payload._id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+        data: {},
       });
+    }
+    res.status(200).json({
+      success: true,
+      message: "Customer fetched",
+      data: user,
     });
   } catch (err) {
     console.error("Error getting customer details", err);
     res.status(500).json({
       success: false,
       data: {},
-      message: err,
+      message: "Error getting customer details",
     });
   }
 });
