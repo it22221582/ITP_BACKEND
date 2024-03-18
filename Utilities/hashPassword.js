@@ -11,11 +11,12 @@ export const GeneratehashPassword = async (password) => {
   }
 };
 
-async function comparePasswords(plainPassword, hashedPassword) {
+export const comparePasswords = async (plainPassword, hashedPassword) => {
+  console.log("in compire passwords function");
   try {
     const match = await bcrypt.compare(plainPassword, hashedPassword);
     return match;
   } catch (error) {
     throw error;
   }
-}
+};
